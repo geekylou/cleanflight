@@ -53,6 +53,7 @@ extern int16_t debug[4];
 void rxPwmInit(rxRuntimeConfig_t *rxRuntimeConfig, rcReadRawDataPtr *callback);
 
 bool sbusInit(rxConfig_t *initialRxConfig, rxRuntimeConfig_t *rxRuntimeConfig, rcReadRawDataPtr *callback);
+bool ibusInit(rcReadRawDataPtr *callback);
 bool spektrumInit(rxConfig_t *rxConfig, rxRuntimeConfig_t *rxRuntimeConfig, rcReadRawDataPtr *callback);
 bool sumdInit(rxConfig_t *rxConfig, rxRuntimeConfig_t *rxRuntimeConfig, rcReadRawDataPtr *callback);
 bool sumhInit(rxConfig_t *rxConfig, rxRuntimeConfig_t *rxRuntimeConfig, rcReadRawDataPtr *callback);
@@ -164,6 +165,9 @@ void serialRxInit(rxConfig_t *rxConfig)
         case SERIALRX_XBUS_MODE_B_RJ01:
             enabled = xBusInit(rxConfig, &rxRuntimeConfig, &rcReadRawFunc);
             break;
+		case SERIALRX_IBUS:
+            enabled = ibusInit(rxConfig, &rxRuntimeConfig, &rcReadRawFunc);
+            break;		
     }
 
     if (!enabled) {
@@ -196,6 +200,8 @@ bool isSerialRxFrameComplete(rxConfig_t *rxConfig)
         case SERIALRX_XBUS_MODE_B:
         case SERIALRX_XBUS_MODE_B_RJ01:
             return xBusFrameComplete();
+		case SERIALRX_IBUS:
+			return ibusFrameComplete();
     }
     return false;
 }
