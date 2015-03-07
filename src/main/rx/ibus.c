@@ -1,11 +1,12 @@
 #include "board.h"
 #include "mw.h"
 
-// Driver for IBUS (Flysky) receiver using UART2
+// Driver for IBUS (Flysky) receiver
 
 #define IBUS_BUFFSIZE 32
 #define IBUS_MAX_CHANNEL 8
 #define IBUS_SYNCBYTE 0x20
+#define IBUS_BUADRATE 115200
 
 static bool ibusFrameDone = false;
 static void ibusDataReceive(uint16_t c);
@@ -13,12 +14,24 @@ static uint16_t ibusReadRawRC(uint8_t chan);
 
 static uint32_t ibusChannelData[IBUS_MAX_CHANNEL];
 
-void ibusInit(rcReadRawDataPtr *callback)
+void ibusUpdateSerialRxFunctionConstraint(functionConstraint_t *functionConstraint)
 {
-    core.rcvrport = uartOpen(USART2, ibusDataReceive, 115200, MODE_RX);
+    functionConstraint->minBaudRate = IBUS_BAUDRATE;
+    functionConstraint->maxBaudRate = IBUS_BAUDRATE;
+    functionConstraint->requiredSerialPortFeatures = SPF_SUPPORTS_CALLBACK;
+}
+
+bool ibusInit(rxConfig_t *rxConfig, rxRuntimeConfig_t *rxRuntimeConfig, rcReadRawDataPtr *callback)
+{
+    int index;
+
+    iBusPort = openSerialPort(FUNCTION_SERIAL_RX, ibusDataReceive, IBUS_BAUDRATE, MODE_RX, SERIAL_NOT_INVERTED);
 
     if (callback)
         *callback = ibusReadRawRC;
+    rxRuntimeConfig->channelCount = IBUS_MAX_CHANNEL;
+
+    return iBusPort != NULL;
 }
 
 static uint8_t ibus[IBUS_BUFFSIZE] = { 0, };

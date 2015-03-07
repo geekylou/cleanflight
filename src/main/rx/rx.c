@@ -95,6 +95,9 @@ void updateSerialRxFunctionConstraint(functionConstraint_t *functionConstraintTo
         case SERIALRX_SPEKTRUM2048:
             spektrumUpdateSerialRxFunctionConstraint(functionConstraintToUpdate);
             break;
+		case SERIALRX_IBUS:
+			ibusUpdateSerialRxFunctionConstraint(functionConstraintToUpdate);
+			break;
         case SERIALRX_SBUS:
             sbusUpdateSerialRxFunctionConstraint(functionConstraintToUpdate);
             break;
