@@ -103,6 +103,8 @@ void printfSupportInit(void);
 void timerInit(void);
 void telemetryInit(void);
 void serialInit(serialConfig_t *initialSerialConfig);
+void mspInit(serialConfig_t *serialConfig);
+void cliInit(serialConfig_t *serialConfig);
 failsafe_t* failsafeInit(rxConfig_t *intialRxConfig);
 pwmOutputConfiguration_t *pwmInit(drv_pwm_config_t *init);
 void mixerInit(mixerMode_e mixerMode, motorMixer_t *customMixers);
@@ -342,6 +344,9 @@ void init(void)
 
     serialInit(&masterConfig.serialConfig);
 
+    mspInit(&masterConfig.serialConfig);
+    cliInit(&masterConfig.serialConfig);
+
     failsafe = failsafeInit(&masterConfig.rxConfig);
 
     beepcodeInit(failsafe);
@@ -376,8 +381,9 @@ void init(void)
 #endif
 
 #ifdef TELEMETRY
-    if (feature(FEATURE_TELEMETRY))
+    if (feature(FEATURE_TELEMETRY)) {
         telemetryInit();
+    }
 #endif
 
 #ifdef USE_FLASHFS

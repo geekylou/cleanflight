@@ -87,6 +87,7 @@ void useRxConfig(rxConfig_t *rxConfigToUse)
     rxConfig = rxConfigToUse;
 }
 
+<<<<<<< HEAD
 #ifdef SERIAL_RX
 void updateSerialRxFunctionConstraint(functionConstraint_t *functionConstraintToUpdate)
 {
@@ -115,6 +116,8 @@ void updateSerialRxFunctionConstraint(functionConstraint_t *functionConstraintTo
 }
 #endif
 
+=======
+>>>>>>> 4d1060f87b52cc5e3df92294be2ee29059778e85
 #define STICK_CHANNEL_COUNT 4
 
 void rxInit(rxConfig_t *rxConfig, failsafe_t *initialFailsafe)
@@ -328,11 +331,9 @@ void processRxChannels(void)
 
 void processDataDrivenRx(void)
 {
-    if (!rcDataReceived) {
-        return;
+    if (rcDataReceived) {
+        failsafe->vTable->reset();
     }
-
-    failsafe->vTable->reset();
 
     processRxChannels();
 
